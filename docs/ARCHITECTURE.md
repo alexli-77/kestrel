@@ -44,3 +44,4 @@ from execution reliability:
 - No secret storage.
 - No long-running daemon process.
 - Catch-up is bounded by `max_catchup_per_day`.
+- Service execution is bounded by `timeout_minutes`.

@@ -5,6 +5,7 @@
     "state_file": "~/.kestrel/state.json",
     "lock_file": "~/.kestrel/kestrel.lock",
     "stale_after_minutes": 60,
+    "timeout_minutes": 30,
     "max_message_chars": 1800,
     "stdout_tail_lines": 50,
     "stderr_tail_lines": 80,
@@ -38,6 +39,7 @@
       "cwd": ".",
       "command": ["echo", "hello from demo.daily"],
       "max_catchup_per_day": 1,
+      "timeout_minutes": 10,
       "reporters": ["local"]
     }
   },

@@ -23,6 +23,7 @@ function defaultConfig() {
       state_file: "~/.kestrel/state.json",
       lock_file: "~/.kestrel/kestrel.lock",
       stale_after_minutes: 60,
+      timeout_minutes: 30,
       max_message_chars: 1800,
       stdout_tail_lines: 50,
       stderr_tail_lines: 80,
@@ -74,6 +75,7 @@ function resolveService(config, name, cli = {}) {
     reporters: cli.noRemote ? ["local"] : service.reporters,
     max_catchup_per_day: Number(service.max_catchup_per_day ?? 1),
     stale_after_minutes: Number(service.stale_after_minutes ?? config.defaults.stale_after_minutes ?? 60),
+    timeout_minutes: Number(service.timeout_minutes ?? config.defaults.timeout_minutes ?? 30),
   };
 }
 

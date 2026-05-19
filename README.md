@@ -89,6 +89,7 @@ Example service:
       "cwd": "/path/to/service",
       "command": ["/bin/zsh", "scripts/run-daily.sh"],
       "max_catchup_per_day": 1,
+      "timeout_minutes": 30,
       "reporters": ["local", "discord"]
     }
   }

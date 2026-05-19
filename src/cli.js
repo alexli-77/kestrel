@@ -174,10 +174,22 @@ async function runService(cli) {
     append(stderrPath, text);
   });
 
+  let timedOut = false;
+  const timeoutMs = Math.max(1, service.timeout_minutes || 30) * 60 * 1000;
+  const timeout = setTimeout(() => {
+    timedOut = true;
+    child.kill("SIGTERM");
+    setTimeout(() => {
+      if (!child.killed) child.kill("SIGKILL");
+    }, 5000).unref();
+  }, timeoutMs);
+  timeout.unref();
+
   const outcome = await new Promise((resolve) => {
     child.on("error", (err) => resolve({ code: 127, signal: null, error: err.message }));
     child.on("close", (code, signal) => resolve({ code, signal, error: null }));
   });
+  clearTimeout(timeout);
 
   const durationMs = Date.now() - startedAt;
   const status = outcome.code === 0 ? "success" : "failed";
@@ -186,7 +198,7 @@ async function runService(cli) {
     status,
     exit_code: outcome.code,
     signal: outcome.signal || "",
-    error: outcome.error || "",
+    error: timedOut ? `Timed out after ${service.timeout_minutes} minutes` : outcome.error || "",
     duration: duration(durationMs),
     stdout_tail: tail(stdout, config.defaults.stdout_tail_lines || 50),
     stderr_tail: tail(stderr, config.defaults.stderr_tail_lines || 80),
@@ -196,7 +208,7 @@ async function runService(cli) {
     status,
     exit_code: outcome.code,
     signal: outcome.signal,
-    error: outcome.error,
+    error: timedOut ? `Timed out after ${service.timeout_minutes} minutes` : outcome.error,
     duration_ms: durationMs,
     finished_at: nowIso(),
     stdout_path: stdoutPath,
