@@ -125,6 +125,98 @@ Hermes command -> kestrel run service.name
 This keeps reliability independent from the agent gateway. If Hermes is down,
 launchd can still run Kestrel.
 
+### Example Hermes Skill
+
+Install a Hermes skill that maps natural-language service commands to Kestrel:
+
+```text
+~/.hermes/skills/devops/kestrel/SKILL.md
+```
+
+Example skill content:
+
+```markdown
+# Kestrel
+
+Use this skill when the user asks about local service status, missed scheduled
+runs, catch-up, stale jobs, retries, job logs, or Discord job alerts.
+
+## Commands
+
+- Show status: `kestrel status --config ~/.kestrel/config.json`
+- Dry-run catch-up: `kestrel check --config ~/.kestrel/config.json --dry-run`
+- Run catch-up: `kestrel catchup --config ~/.kestrel/config.json`
+- Show services: `kestrel services --config ~/.kestrel/config.json`
+- Run one service manually: `kestrel run <service> --config ~/.kestrel/config.json`
+```
+
+When Hermes receives a Discord or chat message, it can route short phrases to
+Kestrel:
+
+| User phrase | Kestrel command |
+| --- | --- |
+| `巡检服务` | `kestrel status --config ~/.kestrel/config.json` |
+| `检查漏跑` | `kestrel check --config ~/.kestrel/config.json --dry-run` |
+| `补跑漏掉的服务` | `kestrel catchup --config ~/.kestrel/config.json` |
+| `列出服务` | `kestrel services --config ~/.kestrel/config.json` |
+| `补跑 <service>` | `kestrel run <service> --config ~/.kestrel/config.json` |
+
+Recommended Hermes response style:
+
+- Start with a one-line summary.
+- List each service as `service: status`.
+- Highlight failed or missing services first.
+- Do not include raw config, tokens, channel ids, private paths, or full logs.
+
+## Discord Alerts
+
+Kestrel can send job notifications to Discord through environment variables.
+The committed config should only contain variable names, never real tokens or
+channel IDs:
+
+```json
+{
+  "reporters": {
+    "discord": {
+      "enabled": true,
+      "token_env": "DISCORD_BOT_TOKEN",
+      "channel_env": "KESTREL_DISCORD_CHANNEL_ID",
+      "create_threads": true
+    }
+  }
+}
+```
+
+Runtime environment:
+
+```bash
+export DISCORD_BOT_TOKEN="replace-with-real-token-outside-git"
+export KESTREL_DISCORD_CHANNEL_ID="replace-with-real-channel-id-outside-git"
+```
+
+Suggested readable templates:
+
+```json
+{
+  "templates": {
+    "started": "Kestrel started a job\n\nService: {service}\nRun: {run_id}\nStatus: running",
+    "success": "Kestrel job succeeded\n\nService: {service}\nRun: {run_id}\nDuration: {duration}\nResult: completed successfully",
+    "failed": "Kestrel job failed\n\nService: {service}\nRun: {run_id}\nDuration: {duration}\nExit code: {exit_code}\nResult: needs attention\n\nRecent error:\n{stderr_tail}"
+  }
+}
+```
+
+Example Discord output:
+
+```text
+Kestrel job succeeded
+
+Service: follow-builders.reply-x
+Run: 20260101-120000-example
+Duration: 57.4s
+Result: completed successfully
+```
+
 ## Design Notes
 
 Kestrel borrows the host-side reliability pattern from systems like NanoClaw:
