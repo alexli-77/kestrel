@@ -1,5 +1,7 @@
 # Kestrel Keeper
 
+![A funny cute doodle drawing of a kestrel mascot](docs/assets/kestrel-doodle.png)
+
 Kestrel is a small reliability companion for scheduled local services. It wraps
 job runs, stores local artifacts, detects missed daily jobs, catches them up,
 and reports status to configurable outputs.
