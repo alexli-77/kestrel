@@ -1,0 +1,30 @@
+{
+  "name": "kestrel-keeper",
+  "version": "0.1.0",
+  "description": "A small reliability companion for scheduled local services: wrap runs, detect missed jobs, catch up, and report safely.",
+  "bin": {
+    "kestrel": "./src/cli.js"
+  },
+  "type": "commonjs",
+  "scripts": {
+    "smoke": "node ./src/cli.js run demo.daily --config ./config.example.json --no-remote -- echo hello-kestrel",
+    "dry-run": "node ./src/cli.js check --config ./config.example.json --dry-run",
+    "scan:secrets": "node ./scripts/scan-secrets.js .",
+    "test": "npm run smoke && npm run dry-run && npm run scan:secrets"
+  },
+  "keywords": [
+    "launchd",
+    "cron",
+    "scheduler",
+    "catch-up",
+    "watchdog",
+    "discord",
+    "observability",
+    "redaction"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  }
+}

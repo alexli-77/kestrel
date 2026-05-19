@@ -1,0 +1,45 @@
+{
+  "defaults": {
+    "timezone": "Etc/UTC",
+    "runs_dir": "~/.kestrel/runs",
+    "state_file": "~/.kestrel/state.json",
+    "lock_file": "~/.kestrel/kestrel.lock",
+    "stale_after_minutes": 60,
+    "max_message_chars": 1800,
+    "stdout_tail_lines": 50,
+    "stderr_tail_lines": 80,
+    "privacy": {
+      "redact_tokens": true,
+      "redact_home": true,
+      "redact_emails": true,
+      "redact_urls": true,
+      "redact_long_ids": true
+    }
+  },
+  "reporters": {
+    "local": {
+      "enabled": true
+    },
+    "discord": {
+      "enabled": false,
+      "token_env": "DISCORD_BOT_TOKEN",
+      "channel_env": "KESTREL_DISCORD_CHANNEL_ID",
+      "create_threads": true
+    }
+  },
+  "services": {
+    "demo.daily": {
+      "enabled": true,
+      "schedule": {
+        "type": "daily",
+        "time": "09:00",
+        "catchup_after_minutes": 10
+      },
+      "cwd": ".",
+      "command": ["echo", "hello from demo.daily"],
+      "max_catchup_per_day": 1,
+      "reporters": ["local"]
+    }
+  },
+  "templates": {}
+}
