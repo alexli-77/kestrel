@@ -9,6 +9,7 @@ sensitive.
 - Authorization headers
 - Real `.env` files
 - Real `config.json`
+- Any `config.*.json` other than `config.example.json`
 - Private hostnames, tunnel URLs, or personal IPs
 - Personal channel IDs
 - Run logs or artifacts

@@ -3,8 +3,33 @@ node_modules/
 .env.*
 !.env.example
 config.json
+config.*.json
+!config.example.json
 *.local.json
 runs/
 logs/
 tmp/
 .DS_Store
+
+# Local runtime and credential material
+*.log
+*.pid
+*.lock
+*.key
+*.pem
+*.p12
+*.sqlite
+*.sqlite3
+*.db
+*.db-wal
+*.db-shm
+
+# Generated reports and artifacts
+artifacts/
+output/
+dist/
+coverage/
+
+# macOS/editor noise
+.idea/
+.vscode/
